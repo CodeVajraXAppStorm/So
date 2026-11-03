@@ -1,153 +1,84 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="gu">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>रोज़ का हिसाब</title>
+<title>હિસાબ</title>
 <style>
-:root{--bg:#f6f4ef;--card:#fff;--ink:#1d2433;--mute:#6b7280;--line:#e3dfd5;--paytm:#1f6feb;--cash:#1a8a4a;--kharcha:#c2410c}
-@media (prefers-color-scheme:dark){:root{--bg:#14171d;--card:#1d222b;--ink:#eef0f4;--mute:#98a1b0;--line:#2c3340;--paytm:#6ea8ff;--cash:#4cc27f;--kharcha:#ff8a5c}}
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d2433;--mute:#6b7280;--line:#d9d4c7;--head:#1d2433;--headtxt:#f6f4ef;--today:#fff3c4;--tot:#e8efe6;--paytm:#1f6feb;--cash:#1a8a4a;--kharcha:#c2410c}
+@media (prefers-color-scheme:dark){:root{--bg:#14171d;--card:#1d222b;--ink:#eef0f4;--mute:#98a1b0;--line:#313846;--head:#eef0f4;--headtxt:#14171d;--today:#3a3416;--tot:#1f2b22;--paytm:#6ea8ff;--cash:#4cc27f;--kharcha:#ff8a5c}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 8px}
-h1{font-size:22px;margin:0}
-.tabs{display:flex;gap:8px}
-.tab{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:20px;font-size:15px}
-.tab.on{background:var(--ink);color:var(--bg)}
-main{padding:8px 18px 40px;max-width:520px;margin:auto}
-.view{display:none}.view.on{display:block}
-label{display:block;font-size:15px;color:var(--mute);margin:16px 0 6px}
-input{width:100%;font-size:20px;padding:14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
-input:focus{outline:2px solid var(--ink);outline-offset:1px}
-#f-paytm{border-left:6px solid var(--paytm)}#f-cash{border-left:6px solid var(--cash)}#f-kharcha{border-left:6px solid var(--kharcha)}
-.save{width:100%;margin-top:24px;padding:16px;font-size:18px;font-weight:600;border:0;border-radius:12px;background:var(--ink);color:var(--bg)}
-.msg{text-align:center;color:var(--cash);margin-top:12px;min-height:22px}
-.nav{display:flex;align-items:center;justify-content:space-between;margin:12px 0}
-.nav button{width:48px;height:48px;font-size:24px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink)}
-.nav span{font-size:20px;font-weight:600}
-.tot{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:16px}
-.tot div{display:flex;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px}
-.tot b{font-size:18px}
-.row{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
-.row .d{font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between}
-.row .d button{border:0;background:none;color:var(--kharcha);font-size:14px}
-.row .v{display:flex;justify-content:space-between;font-size:15px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Gujarati","Shruti",sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 12px 10px}
+.nav button{width:46px;height:46px;font-size:24px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.nav h1{font-size:22px;margin:0;text-align:center}
+.wrap{padding:0 8px 40px;max-width:560px;margin:auto}
+table{width:100%;border-collapse:collapse;background:var(--card);table-layout:fixed}
+th,td{border:1px solid var(--line);padding:0;text-align:center}
+th{background:var(--head);color:var(--headtxt);font-size:15px;padding:10px 2px;position:sticky;top:0;z-index:2}
+td.d{width:54px;font-size:16px;font-weight:600;padding:8px 2px}
+td input{width:100%;border:0;background:transparent;color:var(--ink);font-size:16px;text-align:center;padding:10px 2px;font-family:inherit;border-radius:0}
+td input:focus{outline:2px solid var(--ink);outline-offset:-2px;background:var(--card)}
+tr.today td{background:var(--today)}
 .p{color:var(--paytm)}.c{color:var(--cash)}.k{color:var(--kharcha)}
-.dayres{background:var(--card);border:1.5px solid var(--ink);border-radius:12px;padding:12px 14px;margin-top:10px;display:none}
-.dayres .v{display:flex;justify-content:space-between;font-size:16px;margin-top:6px}
-.sep{border:0;border-top:1px solid var(--line);margin:20px 0 4px}
-.empty{text-align:center;color:var(--mute);padding:30px 0}
+tr.total td{background:var(--tot);font-weight:700;font-size:16px;padding:12px 2px;position:sticky;bottom:0}
 </style>
 </head>
 <body>
-<header>
-  <h1>रोज़ का हिसाब</h1>
-  <div class="tabs">
-    <button class="tab on" id="tab-entry">एंट्री</button>
-    <button class="tab" id="tab-hist">हिस्ट्री</button>
-  </div>
-</header>
-<main>
-  <section class="view on" id="v-entry">
-    <label for="f-date">तारीख</label>
-    <input type="date" id="f-date">
-    <label for="f-paytm">पेटीएम से आए (₹)</label>
-    <input type="number" inputmode="decimal" id="f-paytm" placeholder="0">
-    <label for="f-cash">रोकड़ा मिला (₹)</label>
-    <input type="number" inputmode="decimal" id="f-cash" placeholder="0">
-    <label for="f-kharcha">आज का खर्चा (₹)</label>
-    <input type="number" inputmode="decimal" id="f-kharcha" placeholder="0">
-    <button class="save" id="save">सेव करें</button>
-    <div class="msg" id="msg"></div>
-  </section>
-
-  <section class="view" id="v-hist">
-    <label for="h-date" style="margin-top:4px">तारीख से देखें</label>
-    <input type="date" id="h-date">
-    <div class="dayres" id="dayres"></div>
-    <hr class="sep">
-    <div class="nav">
-      <button id="prev" aria-label="पिछला महीना">‹</button>
-      <span id="mlabel"></span>
-      <button id="next" aria-label="अगला महीना">›</button>
-    </div>
-    <div class="tot">
-      <div><span>कुल पेटीएम</span><b class="p" id="t-paytm">₹0</b></div>
-      <div><span>कुल रोकड़ा</span><b class="c" id="t-cash">₹0</b></div>
-      <div><span>कुल खर्चा</span><b class="k" id="t-kharcha">₹0</b></div>
-    </div>
-    <div id="list"></div>
-  </section>
-</main>
+<div class="nav">
+  <button id="prev" aria-label="અગાઉનો મહિનો">‹</button>
+  <h1 id="title"></h1>
+  <button id="next" aria-label="પછીનો મહિનો">›</button>
+</div>
+<div class="wrap">
+  <table>
+    <thead><tr><th>તારીખ</th><th>પેટીએમ</th><th>રોકડા</th><th>ખર્ચ</th></tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+</div>
 <script>
-const KEY='hisab_data_v1';
+const KEY='hisab_v2';
+const MONTHS=['જાન્યુઆરી','ફેબ્રુઆરી','માર્ચ','એપ્રિલ','મે','જૂન','જુલાઈ','ઓગસ્ટ','સપ્ટેમ્બર','ઓક્ટોબર','નવેમ્બર','ડિસેમ્બર'];
 const $=id=>document.getElementById(id);
-const MONTHS=['जनवरी','फ़रवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'];
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
 function store(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
-const today=()=>{const t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')};
-const rs=n=>'₹'+(Math.round(n*100)/100).toLocaleString('en-IN');
-let cur=new Date();cur.setDate(1);
-
-function fillForm(){
-  const e=load()[$('f-date').value]||{};
-  $('f-paytm').value=e.paytm??'';$('f-cash').value=e.cash??'';$('f-kharcha').value=e.kharcha??'';
-}
-$('f-date').value=today();fillForm();
-$('f-date').addEventListener('change',fillForm);
-
-$('save').onclick=()=>{
-  const dt=$('f-date').value;
-  if(!dt){$('msg').textContent='पहले तारीख चुनें';return}
-  const d=load();
-  d[dt]={paytm:+$('f-paytm').value||0,cash:+$('f-cash').value||0,kharcha:+$('f-kharcha').value||0};
-  store(d);$('msg').textContent='सेव हो गया ✓';
-  setTimeout(()=>$('msg').textContent='',2000);
-};
-
-function show(which){
-  $('v-entry').classList.toggle('on',which==='entry');
-  $('v-hist').classList.toggle('on',which==='hist');
-  $('tab-entry').classList.toggle('on',which==='entry');
-  $('tab-hist').classList.toggle('on',which==='hist');
-  if(which==='hist')render();
-}
-$('tab-entry').onclick=()=>show('entry');
-$('tab-hist').onclick=()=>show('hist');
-$('prev').onclick=()=>{cur.setMonth(cur.getMonth()-1);render()};
-$('next').onclick=()=>{cur.setMonth(cur.getMonth()+1);render()};
-
-function showDay(){
-  const k=$('h-date').value,box=$('dayres');
-  if(!k){box.style.display='none';return}
-  const e=load()[k],[yy,mm,dd]=k.split('-');
-  box.style.display='block';
-  box.innerHTML=e?'<b>'+dd+'/'+mm+'/'+yy+'</b><div class="v"><span class="p">पेटीएम</span><b class="p">'+rs(e.paytm)+'</b></div><div class="v"><span class="c">रोकड़ा</span><b class="c">'+rs(e.cash)+'</b></div><div class="v"><span class="k">खर्चा</span><b class="k">'+rs(e.kharcha)+'</b></div>':'<b>'+dd+'/'+mm+'/'+yy+'</b><div class="empty" style="padding:12px 0 0">इस तारीख की कोई एंट्री नहीं</div>';
-}
-$('h-date').addEventListener('change',showDay);
+const fmt=n=>(Math.round(n*100)/100).toString();
+let year=new Date().getFullYear(), month=new Date().getMonth();
 
 function render(){
-  showDay();
-  const y=cur.getFullYear(),m=String(cur.getMonth()+1).padStart(2,'0');
-  $('mlabel').textContent=MONTHS[cur.getMonth()]+' '+y;
-  const d=load();
-  const keys=Object.keys(d).filter(k=>k.startsWith(y+'-'+m)).sort().reverse();
-  let tp=0,tc=0,tk=0;
-  const list=$('list');list.innerHTML='';
-  if(!keys.length){list.innerHTML='<div class="empty">इस महीने की कोई एंट्री नहीं</div>'}
-  keys.forEach(k=>{
-    const e=d[k];tp+=e.paytm;tc+=e.cash;tk+=e.kharcha;
-    const [yy,mm,dd]=k.split('-');
-    const row=document.createElement('div');row.className='row';
-    row.innerHTML='<div class="d"><span>'+dd+'/'+mm+'/'+yy+'</span><button data-k="'+k+'">हटाएँ</button></div>'+
-      '<div class="v"><span class="p">पेटीएम '+rs(e.paytm)+'</span><span class="c">रोकड़ा '+rs(e.cash)+'</span><span class="k">खर्चा '+rs(e.kharcha)+'</span></div>';
-    list.appendChild(row);
-  });
-  $('t-paytm').textContent=rs(tp);$('t-cash').textContent=rs(tc);$('t-kharcha').textContent=rs(tk);
-  list.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{
-    if(confirm('यह एंट्री हटानी है?')){const x=load();delete x[b.dataset.k];store(x);render()}
-  });
+  const mk=year+'-'+String(month+1).padStart(2,'0');
+  $('title').textContent=MONTHS[month]+' '+year;
+  const data=load()[mk]||{};
+  const days=new Date(year,month+1,0).getDate();
+  const t=new Date(), isNow=t.getFullYear()===year&&t.getMonth()===month;
+  let h='';
+  for(let d=1;d<=days;d++){
+    const e=data[d]||{};
+    h+='<tr'+(isNow&&t.getDate()===d?' class="today"':'')+'><td class="d">'+d+'</td>'+
+      ['p','c','k'].map(f=>'<td><input class="'+f+'" type="number" inputmode="decimal" data-d="'+d+'" data-f="'+f+'" value="'+(e[f]??'')+'"></td>').join('')+'</tr>';
+  }
+  h+='<tr class="total"><td>કુલ</td><td class="p" id="tp"></td><td class="c" id="tc"></td><td class="k" id="tk"></td></tr>';
+  $('body').innerHTML=h;
+  totals();
+  document.querySelectorAll('#body input').forEach(i=>i.addEventListener('input',()=>{
+    const all=load();
+    all[mk]=all[mk]||{};
+    const d=i.dataset.d;
+    all[mk][d]=all[mk][d]||{};
+    if(i.value==='')delete all[mk][d][i.dataset.f];else all[mk][d][i.dataset.f]=+i.value;
+    store(all);totals();
+  }));
 }
+function totals(){
+  const mk=year+'-'+String(month+1).padStart(2,'0');
+  const data=load()[mk]||{};
+  let p=0,c=0,k=0;
+  Object.values(data).forEach(e=>{p+=e.p||0;c+=e.c||0;k+=e.k||0});
+  $('tp').textContent=fmt(p);$('tc').textContent=fmt(c);$('tk').textContent=fmt(k);
+}
+$('prev').onclick=()=>{month--;if(month<0){month=11;year--}render()};
+$('next').onclick=()=>{month++;if(month>11){month=0;year++}render()};
+render();
 </script>
 </body>
 </html>
